@@ -61,8 +61,8 @@ class Logistic_Regression:
         X_Test_normalized = self.normalize_data(X_Test)
         ones = np.ones((X_normalized.shape[0],1))
         ones_2 = np.ones((X_Test_normalized.shape[0],1))
-        np.concatenate([ones,X_normalized],axis = 1)
-        np.concatenate([ones_2,X_Test_normalized],axis = 1)
+        X_normalized = np.concatenate([ones,X_normalized],axis = 1)
+        X_Test_normalized = np.concatenate([ones_2,X_Test_normalized],axis = 1)
         return X_normalized,Y_Train,X_Test_normalized,Y_Test
 
     def predict(self,X_Test):
