@@ -22,21 +22,21 @@ class Ridge_Regression:
     def fit(self, X_Train, Y_Train, LAMBDA):
         assert len(X_Train) == 2 or X_Train.shape[0] == Y_Train.shape[0]
 
-        I = np.eye(X_Train.shape[0])
+        I = np.identity(X_Train.shape[1])
 
-        W = np.linalg.pinv(X_Train.dot(X_Train.T) + LAMBDA*I).dot(X_Train).T.dot(Y_Train)
+        W = np.linalg.pinv(X_Train.T.dot(X_Train) + LAMBDA*I).dot(X_Train.T).dot(Y_Train)
 
         return W
 
     def compute_RSS(self,Y_New,Y_Predicted):
-        loss_function = (1/Y_New.shape[0])*np.sum(np.square(Y_New-Y_Predicted))
+        loss_function = (1./Y_New.shape[0])*np.sum(np.square(Y_New-Y_Predicted))
 
         return loss_function
     def predict(self,W,X_New):
         Y_New = X_New.dot(W)
 
         return Y_New
-    def fit_gradient(self,X_Train,Y_Train,LAMBDA,learning_rate,max_num_epochs=100,mini_batch_size = 20):
+    def fit_gradient(self,X_Train,Y_Train,LAMBDA,learning_rate,max_num_epochs=100,mini_batch_size = 30):
         W = np.random.randn(X_Train.shape[1])
         last_loss = 10e+8
         for ep in range(max_num_epochs):
@@ -90,6 +90,7 @@ if __name__ == "__main__":
     content = Read_DataSet_File()
     X_normalized = normalize_and_add_one(content)
     Y_normalized = np.array(X_normalized[:, -1]).reshape(X_normalized.shape[0], 1)
+    X_normalized = np.array(X_normalized[:,:-1])
     X_Train, Y_Train = X_normalized[:50], Y_normalized[:50]
     X_Test, Y_Test = X_normalized[50:], Y_normalized[50:]
     rrg = Ridge_Regression()
