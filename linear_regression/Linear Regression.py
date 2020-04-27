@@ -20,7 +20,7 @@ class Ridge_Regression:
     def __init__(self):
         return
     def fit(self, X_Train, Y_Train, LAMBDA):
-        assert len(X_Train) == 2 or X_Train.shape[0] == Y_Train.shape[0]
+        assert len(X_Train.shape) == 2 and X_Train.shape[0] == Y_Train.shape[0]
 
         I = np.identity(X_Train.shape[1])
 
@@ -29,30 +29,34 @@ class Ridge_Regression:
         return W
 
     def compute_RSS(self,Y_New,Y_Predicted):
-        loss_function = (1./Y_New.shape[0])*np.sum(np.square(Y_New-Y_Predicted))
+        loss_function = (1./Y_New.shape[0])*np.sum((Y_New-Y_Predicted)**2)
 
         return loss_function
     def predict(self,W,X_New):
         Y_New = X_New.dot(W)
 
         return Y_New
-    def fit_gradient(self,X_Train,Y_Train,LAMBDA,learning_rate,max_num_epochs=100,mini_batch_size = 30):
+    def fit_gradient(self,X_Train,Y_Train,LAMBDA,learning_rate,max_num_epochs=100,batch_size = 128):
         W = np.random.randn(X_Train.shape[1])
         last_loss = 10e+8
         for ep in range(max_num_epochs):
-            arr = np.random.shuffle(range(X_Train.shape[0]))
+            arr = np.array(range(X_Train.shape[0]))
+            np.random.shuffle(arr)
             X_Train = X_Train[arr]
             Y_Train = Y_Train[arr]
-            for i in range(0,X_Train.shape[0],mini_batch_size):
-                X_Train_Sub = X_Train[i:i+mini_batch_size]
+            total_minibatch = int(np.ceil(X_Train.shape[0]/batch_size))
+            for i in range(total_minibatch):
+                index = i * batch_size
+                X_Train_Sub = X_Train[index:index+batch_size]
 
-                Y_Train_Sub = Y_Train[i:i+mini_batch_size]
+                Y_Train_Sub = Y_Train[index:index+batch_size]
 
-                grad = np.dot((W.dot(X_Train_Sub) - Y_Train_Sub),X_Train_Sub) + LAMBDA * W
+                grad = X_Train_Sub.T.dot(X_Train_Sub.dot(W) - Y_Train_Sub) + LAMBDA*W
 
                 W = W - learning_rate*grad
 
-            new_loss = self.compute_RSS((self.predict(W,X_Train),Y_Train))
+            new_loss = self.compute_RSS(self.predict(W,X_Train),Y_Train)
+            #print(new_loss)
             if np.abs(new_loss - last_loss) <= 1e-3:
                 break
             last_loss = new_loss
@@ -88,11 +92,11 @@ class Ridge_Regression:
 
 if __name__ == "__main__":
     content = Read_DataSet_File()
+    Y = np.array(content[:,-1])
     X_normalized = normalize_and_add_one(content)
-    Y_normalized = np.array(X_normalized[:, -1]).reshape(X_normalized.shape[0], 1)
     X_normalized = np.array(X_normalized[:,:-1])
-    X_Train, Y_Train = X_normalized[:50], Y_normalized[:50]
-    X_Test, Y_Test = X_normalized[50:], Y_normalized[50:]
+    X_Train, Y_Train = X_normalized[:50], Y[:50]
+    X_Test, Y_Test = X_normalized[50:], Y[50:]
     rrg = Ridge_Regression()
     best_LAMBDA = rrg.get_the_best_LAMBDA(X_Train, Y_Train)
     print(f"Best LAMBDA : {best_LAMBDA}")
