@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn import linear_model
+import sklearn
 class Logistic_Regression:
     def __init__(self,epochs,mini_batch_size,learning_rate,LAMBDA):
         self.epochs = epochs
@@ -82,14 +84,15 @@ def main():
     X_normalized,Y_Train,X_Test_normalized,Y_Test = LG.Load_Data_From_File()
     LG.init_parameter(X_normalized)
     cross_entropy_loss = LG.train_using_mini_batch_gradient(X_normalized,Y_Train)
-    '''
-    plt.plot(range(50),cross_entropy_loss[:50])
+    plt.plot(range(30),cross_entropy_loss[:30])
     plt.xlabel("iterations")
     plt.ylabel("Entropy loss")
     plt.show()
-    '''
+
     Y_predicted = np.array(LG.predict(X_Test_normalized))
     print((len(Y_predicted[Y_predicted == Y_Test])/len(Y_Test))*100)
+    print(LG.w)
+
 
 if __name__ == "__main__":
     main()
