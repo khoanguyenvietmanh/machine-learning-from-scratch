@@ -1,23 +1,26 @@
 import tensorflow as tf
 import numpy as np
+
 tf.compat.v1.disable_eager_execution()
 
-class Data_Reader:
-    def __init__(self,data_path,batch_size,vocab_size):
-        self._batch_size = batch_size
+
+class Data_Reader:  # create a class to read data from tf-idf file
+    def __init__(self, data_path, batch_size, vocab_size):
+        self._batch_size = batch_size  # batch size here is used for mini-batch gradient descent
         with open(data_path) as f:
             d_lines = f.read().splitlines()
 
         self._data = []
         self._labels = []
 
-        for data_id , line in enumerate(d_lines) :
+        for data_id, line in enumerate(d_lines):
             vector = [0.0 for _ in range(vocab_size)]
             features = line.split("<fff>")
-            label,doc_id = int(features[0]) , int(features[1])
+            label, doc_id = int(features[0]), int(features[1])
             tokens = features[2].split()
             for token in tokens:
-                index , value = int(token.split(':')[0]) , float(token.split(":")[1])
+                index, value = int(token.split(':')[0]), float(token.split(":")[1])
+                vector[index] = value
             self._data.append(vector)
             self._labels.append(label)
         self._data = np.array(self._data)
@@ -27,6 +30,7 @@ class Data_Reader:
         self._num_epochs = 0
 
         self._batch_id = 0
+
     def next_batch(self):
         start = self._batch_id * self._batch_size
         end = start + self._batch_size
@@ -38,94 +42,115 @@ class Data_Reader:
             self._num_epochs += 1
             self._batch_id = 0
 
-            indices = range(len(self._data))
+            indices = list(range(len(self._data)))
 
-            np.random.seed(2018)
+            np.random.seed(2020)
 
             np.random.shuffle(indices)
 
-            self._data,self._label = self._data[indices] , self._label[indices]
+            self._data, self._labels = self._data[indices], self._labels[indices]
 
-        return self._data[start:end] , self._labels[start:end]
+        return self._data[start:end], self._labels[start:end]
+
+
 class MLP:
-    def __init__(self,vocab_size,hidden_size):
+    def __init__(self, vocab_size, hidden_size):
         self._vocab_size = vocab_size
         self._hidden_size = hidden_size
-    def build_graph(self):
-        self._X = tf.compat.v1.placeholder(tf.float32,shape = (None,self._vocab_size))
-        self._real_Y = tf.compat.v1.placeholder(tf.int32, shape = [None,])
+
+    def build_graph(self):  # build our computational graph
+        self._X = tf.compat.v1.placeholder(tf.float32, shape=[None, self._vocab_size])
+
+        self._real_Y = tf.compat.v1.placeholder(tf.int32, shape=[None, ])
 
         NUM_CLASSES = 20
 
-        weights_1 = tf.compat.v1.get_variable(name = "weights_input_hidden", shape = (self._vocab_size,self._hidden_size), initializer = tf.random_normal_initializer(2030))
+        weights_1 = tf.compat.v1.get_variable(name="weights_input_hidden", shape=(self._vocab_size, self._hidden_size),
+                                              initializer=tf.random_normal_initializer(seed=2020))
 
-        biases_1 =  tf.compat.v1.get_variable(name="biases_input_hidden", shape=(self._hidden_size), initializer=tf.random_normal_initializer(2020))
+        biases_1 = tf.compat.v1.get_variable(name="biases_input_hidden", shape=(self._hidden_size),
+                                             initializer=tf.random_normal_initializer(seed=2020))
 
-        weights_2 =  tf.compat.v1.get_variable(name = "weights_hidden_output", shape = (self._hidden_size,NUM_CLASSES), initializer = tf.random_normal_initializer(2020))
+        weights_2 = tf.compat.v1.get_variable(name="weights_hidden_output", shape=(self._hidden_size, NUM_CLASSES),
+                                              initializer=tf.random_normal_initializer(seed=2020))
 
-        biases_2 =  tf.compat.v1.get_variable(name="biases_hidden_output", shape=(NUM_CLASSES), initializer=tf.random_normal_initializer(2020))
+        biases_2 = tf.compat.v1.get_variable(name="biases_hidden_output", shape=(NUM_CLASSES),
+                                             initializer=tf.random_normal_initializer(seed=2020))
 
-        hidden = tf.matmul(self._X,weights_1) + biases_1
+        hidden = tf.matmul(self._X, weights_1) + biases_1
         hidden = tf.sigmoid(hidden)
 
         logits = tf.matmul(hidden, weights_2) + biases_2
 
-        labels_one_hot_encoding = tf.one_hot(indices= self._real_Y,depth = NUM_CLASSES,dtype= tf.float32)
+        labels_one_hot_encoding = tf.one_hot(indices=self._real_Y, depth=NUM_CLASSES, dtype=tf.float32)
 
-        loss = tf.nn.softmax_cross_entropy_with_logits(labels= labels_one_hot_encoding,logits= logits)
+        loss = tf.nn.softmax_cross_entropy_with_logits(labels=labels_one_hot_encoding, logits=logits)
 
         loss = tf.reduce_mean(loss)
 
-        probs = tf.nn.softmax(logits)
+        probs = tf.compat.v1.nn.softmax(logits)
 
-        predicted_labels = tf.argmax(probs , axis=1)
+        predicted_labels = tf.argmax(probs, axis=1)
 
         predicted_labels = tf.squeeze(predicted_labels)
 
         return predicted_labels, loss
-    def trainer(self,loss,learning_rate):
+
+    def trainer(self, loss, learning_rate):
         train_op = tf.compat.v1.train.AdamOptimizer(learning_rate).minimize(loss)
 
         return train_op
-def save_parameters(name,value,epoch):
-    filename = name.replace(':',"-colon-") + "-epoch-{}.txt".format(epoch)
 
-    if len(value.shape) == 1: # it is a list
+
+def save_parameters(name, value, epoch):
+    filename = name.replace(':', "-colon-") + "-epoch-{}.txt".format(epoch)
+
+    if len(value.shape) == 1:  # it is a list
         string_form = ','.join([str(number) for number in value])
     else:
         string_form = '\n'.join([','.join([str(number) for number in value[row]]) for row in range(value.shape[0])])
 
-    with open("../20news-bydate/save-paras/" + filename , "w") as f:
+    with open("../20news-bydate/save-paras/" + filename, "w") as f:
         f.write(string_form)
-def restore_parameters(name,epoch):
+
+
+def restore_parameters(name, epoch):
     filename = name.replace(':', "-colon-") + "-epoch-{}.txt".format(epoch)
 
     with open("../20news-bydate/save-paras/" + filename, "r") as f:
         lines = f.read().splitlines()
-    if(len(lines)) == 1:
+    if len(lines) == 1:
         value = [float(number) for number in lines[0].split(',')]
     else:
-        value = [[float(number) for number in lines[row].split(',')] for row in range(lines)]
+        value = [[float(number) for number in lines[row].split(',')] for row in range(len(lines))]
     return value
 
+
 def training_and_testing():
+    # perform the forward propagation
     with open("../20news-bydate/words_idfs.txt") as f:
         vocab_size = len(f.read().splitlines())
 
-    mlp = MLP(vocab_size = vocab_size,hidden_size=50)
+    mlp = MLP(vocab_size=vocab_size, hidden_size=50)
 
     predicted_labels, loss = mlp.build_graph()
-    train_op = mlp.trainer(loss = loss,learning_rate=0.1)
+
+    train_op = mlp.trainer(loss=loss, learning_rate=0.1)
+
+    # load data from tf-idf file
     def load_dataset():
-        train_data_reader = Data_Reader(data_path="../20news-bydate/data_tf_idf.txt",batch_size=50,vocab_size=vocab_size)
+        train_data_reader = Data_Reader(data_path="../20news-bydate/data_tf_idf.txt", batch_size=50,
+                                        vocab_size=vocab_size)
 
-        test_data_reader = Data_Reader(data_path="../20news-bydate/test_data_tf_idf.txt", batch_size=50, vocab_size=vocab_size)
+        test_data_reader = Data_Reader(data_path="../20news-bydate/test_data_tf_idf.txt", batch_size=50,
+                                       vocab_size=vocab_size)
 
-        return train_data_reader,test_data_reader
+        return train_data_reader, test_data_reader
 
     train_data_reader, test_data_reader = load_dataset()
 
-    # start a working process
+    # start a working process for training
+    ''''
     with tf.compat.v1.Session() as sess:
         step ,MAX_STEP  = 0 , 1000**2
         sess.run(tf.compat.v1.global_variables_initializer())
@@ -136,34 +161,47 @@ def training_and_testing():
 
             step += 1
 
-            print(f'step : {step} , loss : {loss}')
-    # evaluate model on test data
-    with tf.Session() as sess:
-        epoch  = 0
+            print(f'step : {step} , loss : {loss_eval}')
 
-        trainable_variables = tf.trainable_variables()
+            print(f"{train_data_reader._num_epochs}")
+
+            trainable_variables = tf.compat.v1.trainable_variables()
+
+            for variable in trainable_variables:
+                save_parameters(name = variable.name,value = variable.eval(),epoch = train_data_reader._num_epochs)
+    '''
+    # start a working process for testing
+    with tf.compat.v1.Session() as sess:
+
+        sess.run(tf.compat.v1.global_variables_initializer())
+
+        epoch = 10
+
+        trainable_variables = tf.compat.v1.trainable_variables()
         for variable in trainable_variables:
-            saved_value = restorer_parameters(variable.name,epoch)
+            saved_value = restore_parameters(variable.name, epoch)
 
-            assign_op = variable.asign(saved_value)
+            assign_op = variable.assign(saved_value)
 
             sess.run(assign_op)
 
             num_true_preds = 0
-            while(True):
-                test_data , test_labels = test_data_reader.next_batch()
-                test_plabels_eval = sess.run(predicted_labels,feed_dict = {mlp._X : train_data,mlp._real_Y : train_labels})
+        while (True):
+            test_data, test_labels = test_data_reader.next_batch()
 
-                matches = np.equal(test_plabels_eval,test_label)
+            test_plabels_eval = sess.run([predicted_labels], feed_dict={mlp._X: test_data, mlp._real_Y: test_labels})
 
-                num_true_preds += np.sum(matches.astype(float))
+            matches = np.equal(test_plabels_eval, test_labels)
 
-                if test_data_reader._batch_id == 0:
-                    break
-            print("Epochs:",epoch)
-            print("Accuracy on test data:",num_true_preds/len(test_data_reader._data))
+            num_true_preds += np.sum(matches.astype(float))
+
+            if test_data_reader._batch_id == 0:
+                break
+        print("Epochs:", epoch)
+        print("Accuracy on test data:", num_true_preds / len(test_data_reader._data))
+
+
 if __name__ == "__main__":
     training_and_testing()
-
 
 
