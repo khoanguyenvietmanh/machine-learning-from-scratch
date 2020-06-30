@@ -1,93 +1,87 @@
-step 20 loss: 1.5917041
-step 40 loss: 2.4369478
-step 60 loss: 4.2231016
-step 80 loss: 0.5900181
-step 100 loss: 1.8568949
-step 120 loss: 3.5157318
-step 140 loss: 1.6719184
-step 160 loss: 1.5088413
-step 180 loss: 3.3371603
-step 200 loss: 3.8958557
-step 220 loss: 4.2215223
-Epoch: 1
-Accuracy on test data: 4.142326075411577
-step 240 loss: 3.1979728
-step 260 loss: 3.019982
-step 280 loss: 2.7871997
-step 300 loss: 2.7285275
-step 320 loss: 2.6575499
-step 340 loss: 2.5718048
-step 360 loss: 2.3908074
-step 380 loss: 2.3620038
-step 400 loss: 2.2544107
-step 420 loss: 2.0047247
-step 440 loss: 2.1263278
-Epoch: 2
-Accuracy on test data: 50.14604354753054
-step 460 loss: 1.7206339
-step 480 loss: 1.4549265
-step 500 loss: 1.3038896
-step 520 loss: 1.1725148
-step 540 loss: 1.0913498
-step 560 loss: 1.0077133
-step 580 loss: 0.86028105
-step 600 loss: 0.9680991
-step 620 loss: 0.758142
-step 640 loss: 0.70791334
-step 660 loss: 0.48193908
-Epoch: 3
-Accuracy on test data: 68.33510355815189
-step 680 loss: 0.41855416
-step 700 loss: 0.35570073
-step 720 loss: 0.34507996
-step 740 loss: 0.430632
-step 760 loss: 0.25993827
-step 780 loss: 0.328146
-step 800 loss: 0.27460843
-step 820 loss: 0.2659802
-step 840 loss: 0.30589017
-step 860 loss: 0.2522604
-step 880 loss: 0.34352818
-step 900 loss: 0.1561636
-Epoch: 4
-Accuracy on test data: 71.07010090281466
-step 920 loss: 0.11816695
-step 940 loss: 0.11139767
-step 960 loss: 0.17858368
-step 980 loss: 0.105134256
-step 1000 loss: 0.09709693
-step 1020 loss: 0.11352178
-step 1040 loss: 0.1277202
-step 1060 loss: 0.19316542
-step 1080 loss: 0.13036685
-step 1100 loss: 0.14460613
-step 1120 loss: 0.28638846
-Epoch: 5
-Accuracy on test data: 72.33138608603292
-step 1140 loss: 0.047751654
-step 1160 loss: 0.028132062
-step 1180 loss: 0.032919485
-step 1200 loss: 0.042443458
-step 1220 loss: 0.099337645
-step 1240 loss: 0.045077678
-step 1260 loss: 0.036498398
-step 1280 loss: 0.063995235
-step 1300 loss: 0.07431085
-step 1320 loss: 0.053607684
-step 1340 loss: 0.027046103
-Epoch: 6
-Accuracy on test data: 73.3271375464684
-step 1360 loss: 0.015580315
-step 1380 loss: 0.008249501
-step 1400 loss: 0.022695413
-step 1420 loss: 0.008779023
-step 1440 loss: 0.013603667
-step 1460 loss: 0.021969426
-step 1480 loss: 0.01851358
-step 1500 loss: 0.09218822
-step 1520 loss: 0.016957285
-step 1540 loss: 0.007509951
-step 1560 loss: 0.013607758
-step 1580 loss: 0.014059215
-Epoch: 7
-Accuracy on test data: 74.24322889006903
+step: 20 loss: 0.0002571087
+step: 40 loss: 1.0598379
+step: 60 loss: 7.5499415
+step: 80 loss: 0.45277742
+step: 100 loss: 1.4315
+step: 120 loss: 5.4647174
+step: 140 loss: 1.2392772
+step: 160 loss: 4.03423
+step: 180 loss: 4.7991905
+step: 200 loss: 5.4172707
+step: 220 loss: 4.50836
+Epoch:  1
+Accuracy on test data:  4.567180031864047
+step: 240 loss: 2.482046
+step: 260 loss: 2.3428414
+step: 280 loss: 2.29398
+step: 300 loss: 1.9501145
+step: 320 loss: 1.7891027
+step: 340 loss: 1.8141888
+step: 360 loss: 1.5753573
+step: 380 loss: 1.577131
+step: 400 loss: 1.357904
+step: 420 loss: 1.2327027
+step: 440 loss: 1.3112712
+Epoch:  2
+Accuracy on test data:  83.64312267657992
+step: 460 loss: 0.85306954
+step: 480 loss: 0.68014246
+step: 500 loss: 0.5038792
+step: 520 loss: 0.70701575
+step: 540 loss: 0.7343758
+step: 560 loss: 0.6246736
+step: 580 loss: 0.6518765
+step: 600 loss: 0.4267859
+step: 620 loss: 0.35936782
+step: 640 loss: 0.5580307
+step: 660 loss: 0.46075967
+Epoch:  3
+Accuracy on test data:  91.42326075411577
+step: 680 loss: 0.20292307
+step: 700 loss: 0.22188652
+step: 720 loss: 0.14198539
+step: 740 loss: 0.28253224
+step: 760 loss: 0.15919809
+step: 780 loss: 0.18016651
+step: 800 loss: 0.17074552
+step: 820 loss: 0.20118248
+step: 840 loss: 0.24632102
+step: 860 loss: 0.14187202
+step: 880 loss: 0.21000217
+step: 900 loss: 0.26246095
+Epoch:  4
+Accuracy on test data:  97.2251725969198
+step: 920 loss: 0.03443316
+step: 940 loss: 0.06856236
+step: 960 loss: 0.03870354
+step: 980 loss: 0.033446673
+step: 1000 loss: 0.06354501
+step: 1020 loss: 0.048481908
+step: 1040 loss: 0.078460924
+step: 1060 loss: 0.04454019
+step: 1080 loss: 0.17195202
+step: 1100 loss: 0.023649264
+step: 1120 loss: 0.04743208
+Epoch:  5
+Accuracy on test data:  99.15029208709507
+step: 1140 loss: 0.012698684
+step: 1160 loss: 0.01035149
+step: 1180 loss: 0.022061203
+step: 1200 loss: 0.0087961815
+step: 1220 loss: 0.01654439
+step: 1240 loss: 0.00860907
+step: 1260 loss: 0.025001217
+step: 1280 loss: 0.0084876735
+step: 1300 loss: 0.012895229
+step: 1320 loss: 0.011541369
+step: 1340 loss: 0.013037214
+Epoch:  6
+Accuracy on test data:  99.46893255443442
+step: 1360 loss: 0.0040495605
+step: 1380 loss: 0.0075064288
+step: 1400 loss: 0.007386604
+step: 1420 loss: 0.00808192
+step: 1440 loss: 0.0042478424
+step: 1460 loss: 0.0038593605
+step: 1480 loss: 0.005062742
+step: 1500 loss: 0.004552547
